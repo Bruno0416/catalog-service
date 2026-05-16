@@ -16,6 +16,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // Handler producto no existe
+    @ExceptionHandler(ProductDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleProductDoesNotExistException(
+        ProductDoesNotExistException ex,
+        HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("El producto no existe")
+                .errors(Map.of("error", ex.getMessage()))
+                .endpoint(request.getRequestURI())
+                .build()
+        );
+    }
+
     // Handler permisos usuario
     @ExceptionHandler(UnauthorizedOperationException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorizedOperation(
@@ -25,7 +42,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             ErrorResponse.builder()
                 .timeStamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.FORBIDDEN.value())
                 .message("Debe ser administrador para realizar esta operacion")
                 .errors(Map.of("error", ex.getMessage()))
                 .endpoint(request.getRequestURI())
@@ -71,7 +88,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse.builder()
                 .timeStamp(LocalDateTime.now())
-                .status(HttpStatus.UNAUTHORIZED.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .message("Token expirado")
                 .errors(error)
                 .endpoint(request.getRequestURI())
@@ -93,7 +110,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse.builder()
                 .timeStamp(LocalDateTime.now())
-                .status(HttpStatus.UNAUTHORIZED.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .message("Error de token")
                 .errors(error)
                 .endpoint(request.getRequestURI())

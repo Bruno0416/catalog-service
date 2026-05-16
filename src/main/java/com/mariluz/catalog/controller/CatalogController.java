@@ -22,7 +22,7 @@ public class CatalogController {
     private final CatalogService service;
 
     // 1. crear producto
-    @PostMapping("/product")
+    @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(
         @Valid @RequestBody CreateProductRequest request
     ) {
@@ -32,7 +32,7 @@ public class CatalogController {
     }
 
     // 2. actualizar producto
-    @PutMapping("/product")
+    @PutMapping("/update")
     public ResponseEntity<ProductResponse> updateProduct(
         @Valid @RequestBody UpdateProductRequest request
     ) {

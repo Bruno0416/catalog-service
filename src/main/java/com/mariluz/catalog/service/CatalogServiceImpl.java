@@ -57,6 +57,7 @@ public class CatalogServiceImpl implements CatalogService {
         );
         // retornar ProductResponse con los datos de la tupla creada
         return ProductResponse.builder()
+            .id(p.getId())
             .name(p.getName())
             .price(p.getPrice())
             .quantity(p.getQuantity())
@@ -84,7 +85,7 @@ public class CatalogServiceImpl implements CatalogService {
         );
         // 4. retornar el producto actualizado
         return ProductResponse.builder()
-            .id(request.getId())
+            .id(p.getId())
             .name(p.getName())
             .price(p.getPrice())
             .quantity(p.getQuantity())
