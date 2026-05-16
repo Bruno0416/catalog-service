@@ -4,7 +4,7 @@ import com.mariluz.catalog.dto.CreateProductRequest;
 import com.mariluz.catalog.model.Product;
 import com.mariluz.catalog.service.CatalogService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/catalog")
+@RequiredArgsConstructor
 public class CatalogController {
 
-    @Autowired
-    private CatalogService service;
+    private final CatalogService service;
 
     // 1. crear producto
     @PostMapping("/product")

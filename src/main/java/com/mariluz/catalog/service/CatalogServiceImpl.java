@@ -5,16 +5,16 @@ import com.mariluz.catalog.exceptions.UnauthorizedOperationException;
 import com.mariluz.catalog.model.Product;
 import com.mariluz.catalog.model.User;
 import com.mariluz.catalog.repository.CatalogRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CatalogServiceImpl implements CatalogService {
 
-    @Autowired
-    private CatalogRepository repo;
+    private final CatalogRepository repo;
 
     // ------------------ Helpers privados para validar rol usuario -------------------
 
