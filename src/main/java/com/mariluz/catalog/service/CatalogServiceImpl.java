@@ -8,6 +8,7 @@ import com.mariluz.catalog.exceptions.UnauthorizedOperationException;
 import com.mariluz.catalog.model.Product;
 import com.mariluz.catalog.model.User;
 import com.mariluz.catalog.repository.CatalogRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -90,5 +91,40 @@ public class CatalogServiceImpl implements CatalogService {
             .price(p.getPrice())
             .quantity(p.getQuantity())
             .build();
+    }
+
+    @Override
+    public ProductResponse getProductById(Integer id) {
+        // 1. buscar producto | si no existe arrojamos una excepcion
+        Product p = repo
+            .findById(id)
+            .orElseThrow(() -> new ProductDoesNotExistException());
+
+        // 2. retornar el producto encontrado
+        return ProductResponse.builder()
+            .id(p.getId())
+            .name(p.getName())
+            .price(p.getPrice())
+            .quantity(p.getQuantity())
+            .build();
+    }
+
+    @Override
+    public List<ProductResponse> getAllProducts() {
+        List<Product> products = repo.findAll();
+        return products
+            // Convierte la coleccion List<Product> en un flujo de datos (stream) que permite procesar los elementos de manera secuencial
+            .stream()
+            // toma los elementos del stream ('p') y los mapea a ProductResponse
+            .map(p ->
+                ProductResponse.builder()
+                    .id(p.getId())
+                    .name(p.getName())
+                    .price(p.getPrice())
+                    .quantity(p.getQuantity())
+                    .build()
+            )
+            // el .toList() recolecta los nuevos objetos y transformados y los arregla como una lista
+            .toList();
     }
 }
