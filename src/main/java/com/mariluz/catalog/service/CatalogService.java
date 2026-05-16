@@ -15,6 +15,7 @@ public interface CatalogService {
     // 4. listar todos los productos
     public List<ProductResponse> getAllProducts();
     // 5. obtener lista de productos por id List<Integer> ids
+    public List<ProductResponse> getProductsByIds(List<Integer> ids);
     // 6. actualizar stock
-
+    // public void updateStock(Integer id, Integer quantitySold);
 }
