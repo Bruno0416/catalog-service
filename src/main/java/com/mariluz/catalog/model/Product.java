@@ -28,10 +28,6 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "La descripción es obligatoria")
-    @Column(nullable = false)
-    private String description;
-
     @NotNull(message = "El precio es obligatorio")
     @Column(nullable = false)
     private Integer price;
@@ -39,5 +35,5 @@ public class Product {
     @NotNull(message = "El stock es obligatorio")
     @Positive(message = "El stock debe ser mayor a 0")
     @Column(nullable = false)
-    private Integer stock;
+    private Integer quantity;
 }

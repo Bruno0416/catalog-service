@@ -1,6 +1,9 @@
 package com.mariluz.catalog.service;
 
 import com.mariluz.catalog.dto.CreateProductRequest;
+import com.mariluz.catalog.dto.ProductResponse;
+import com.mariluz.catalog.dto.UpdateProductRequest;
+import com.mariluz.catalog.exceptions.ProductDoesNotExistException;
 import com.mariluz.catalog.exceptions.UnauthorizedOperationException;
 import com.mariluz.catalog.model.Product;
 import com.mariluz.catalog.model.User;
@@ -40,16 +43,51 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Product createProduct(CreateProductRequest request) {
+    public ProductResponse createProduct(CreateProductRequest request) {
+        // 1. validar que la solicitud la manda un admin
         validateAdminAccess("Solo los administradores pueden crear productos");
 
-        return repo.save(
+        // 2. crear tupla
+        Product p = repo.save(
             Product.builder()
                 .name(request.getName())
-                .description(request.getDescription())
                 .price(request.getPrice())
-                .stock(request.getStock())
+                .quantity(request.getQuantity())
                 .build()
         );
+        // retornar ProductResponse con los datos de la tupla creada
+        return ProductResponse.builder()
+            .name(p.getName())
+            .price(p.getPrice())
+            .quantity(p.getQuantity())
+            .build();
+    }
+
+    @Override
+    public ProductResponse updateProduct(UpdateProductRequest request) {
+        // 1. validar que la solicitud la manda un admin
+        validateAdminAccess(
+            "Solo los administradores pueden actualizar productos"
+        );
+        // 2. validar si existe el producto usando id
+        if (!repo.existsById(request.getId())) {
+            throw new ProductDoesNotExistException();
+        }
+        // 3. actualizar el producto
+        Product p = repo.save(
+            Product.builder()
+                .id(request.getId())
+                .name(request.getName())
+                .price(request.getPrice())
+                .quantity(request.getQuantity())
+                .build()
+        );
+        // 4. retornar el producto actualizado
+        return ProductResponse.builder()
+            .id(request.getId())
+            .name(p.getName())
+            .price(p.getPrice())
+            .quantity(p.getQuantity())
+            .build();
     }
 }
