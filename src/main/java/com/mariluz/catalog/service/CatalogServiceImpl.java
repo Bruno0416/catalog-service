@@ -152,4 +152,19 @@ public class CatalogServiceImpl implements CatalogService {
             )
             .toList();
     }
+
+    @Override
+    public void updateStock(Integer id, Integer quantitySold) {
+        // 1. verificar que el producto existe
+        /*
+        Con esto nos aseguramos de que el producto existe y lo guardamos en una variable
+            y si no, arrojamos inmediatamente una excepcion para controlar el error.
+        */
+        Product p = repo
+            .findById(id)
+            .orElseThrow(() -> new ProductDoesNotExistException());
+        // 2. actualizar producto
+        p.setQuantity(p.getQuantity() - quantitySold); // actualizamos el stock obteniendo el actual y restandole el vendido
+        repo.save(p); // guardamos la entidad seteada con el nuevo valor
+    }
 }

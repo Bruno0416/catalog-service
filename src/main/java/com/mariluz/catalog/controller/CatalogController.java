@@ -5,9 +5,12 @@ import com.mariluz.catalog.dto.ProductResponse;
 import com.mariluz.catalog.dto.UpdateProductRequest;
 import com.mariluz.catalog.service.CatalogService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +43,22 @@ public class CatalogController {
             service.updateProduct(request)
         );
     }
+
     // 3. obtener producto por id
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(
+        @PathVariable Integer id
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            service.getProductById(id)
+        );
+    }
+
     // 4. listar todos los productos
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            service.getAllProducts()
+        );
+    }
 }
