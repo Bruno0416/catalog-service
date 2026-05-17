@@ -1,8 +1,6 @@
 package com.mariluz.catalog.service;
 
-import com.mariluz.catalog.dto.CreateProductRequest;
-import com.mariluz.catalog.dto.ProductResponse;
-import com.mariluz.catalog.dto.UpdateProductRequest;
+import com.mariluz.catalog.dto.*;
 import java.util.List;
 
 public interface CatalogService {
@@ -15,7 +13,7 @@ public interface CatalogService {
     // 4. listar todos los productos
     public List<ProductResponse> getAllProducts();
     // 5. obtener lista de productos por id List<Integer> ids
-    public List<ProductResponse> getProductsByIds(List<Integer> ids);
+    public List<ProductResponse> getProductsByIds(ProductsByIdRequest request);
     // 6. actualizar stock
-    public void updateStock(Integer id, Integer quantitySold);
+    public void updateStock(UpdateStockRequest request);
 }

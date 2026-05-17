@@ -1,8 +1,6 @@
 package com.mariluz.catalog.service;
 
-import com.mariluz.catalog.dto.CreateProductRequest;
-import com.mariluz.catalog.dto.ProductResponse;
-import com.mariluz.catalog.dto.UpdateProductRequest;
+import com.mariluz.catalog.dto.*;
 import com.mariluz.catalog.exceptions.ProductDoesNotExistException;
 import com.mariluz.catalog.exceptions.UnauthorizedOperationException;
 import com.mariluz.catalog.model.Product;
@@ -131,14 +129,14 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public List<ProductResponse> getProductsByIds(List<Integer> ids) {
+    public List<ProductResponse> getProductsByIds(ProductsByIdRequest request) {
         /*
         Tiene la misma logica de getAllProducts pero en vez de usar findAll()
         usamos -> findAllById(ids) para encontrar solo la lista de ids/productos deseada
         */
 
         // 1. buscar productos usando la lista de IDs
-        List<Product> products = repo.findAllById(ids);
+        List<Product> products = repo.findAllById(request.getIds());
         // 3. convertir la lista de productos en una lista de ProductResponse y retornarla
         return products
             .stream()
@@ -154,17 +152,17 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public void updateStock(Integer id, Integer quantitySold) {
-        // 1. verificar que el producto existe
+    public void updateStock(UpdateStockRequest request) {
         /*
-        Con esto nos aseguramos de que el producto existe y lo guardamos en una variable
+        1. verificar que el producto existe.
+        Nos aseguramos de que el producto existe y lo guardamos en una variable
             y si no, arrojamos inmediatamente una excepcion para controlar el error.
         */
         Product p = repo
-            .findById(id)
+            .findById(request.getId())
             .orElseThrow(() -> new ProductDoesNotExistException());
         // 2. actualizar producto
-        p.setQuantity(p.getQuantity() - quantitySold); // actualizamos el stock obteniendo el actual y restandole el vendido
+        p.setQuantity(p.getQuantity() - request.getQuantity()); // actualizamos el stock obteniendo el actual y restandole el vendido
         repo.save(p); // guardamos la entidad seteada con el nuevo valor
     }
 }

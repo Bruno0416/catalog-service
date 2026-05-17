@@ -1,8 +1,6 @@
 package com.mariluz.catalog.controller;
 
-import com.mariluz.catalog.dto.CreateProductRequest;
-import com.mariluz.catalog.dto.ProductResponse;
-import com.mariluz.catalog.dto.UpdateProductRequest;
+import com.mariluz.catalog.dto.*;
 import com.mariluz.catalog.service.CatalogService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -60,5 +58,24 @@ public class CatalogController {
         return ResponseEntity.status(HttpStatus.OK).body(
             service.getAllProducts()
         );
+    }
+
+    // 5. obtener lista de productos por id List<Integer> ids
+    @GetMapping("/products/ids")
+    public ResponseEntity<List<ProductResponse>> getProductsByIds(
+        @Valid @RequestBody ProductsByIdRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            service.getProductsByIds(request)
+        );
+    }
+
+    // 6. actualizar stock
+    @PutMapping("/update-stock")
+    public ResponseEntity<Void> updateStock(
+        @Valid @RequestBody UpdateStockRequest request
+    ) {
+        service.updateStock(request);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
