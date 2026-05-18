@@ -60,7 +60,7 @@ public class CatalogController {
     }
 
     // 5. obtener lista de productos por id List<Integer> ids
-    @GetMapping("/products/ids")
+    @PostMapping("/products/ids")
     public ResponseEntity<GetProductsResponse> getProductsByIds(
         @Valid @RequestBody ProductsByIdRequest request
     ) {
