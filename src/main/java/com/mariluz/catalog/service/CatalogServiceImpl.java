@@ -108,28 +108,32 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts() {
+    public GetProductsResponse getAllProducts() {
         // 1. obtener todos los productos
         List<Product> products = repo.findAll();
         // 2. convertir la lista de productos en una lista de ProductResponse y retornarla
-        return products
-            // Convierte la coleccion List<Product> en un flujo de datos (stream) que permite procesar los elementos de manera secuencial
-            .stream()
-            // toma los elementos del stream ('p') y los mapea a ProductResponse
-            .map(p ->
-                ProductResponse.builder()
-                    .id(p.getId())
-                    .name(p.getName())
-                    .price(p.getPrice())
-                    .quantity(p.getQuantity())
-                    .build()
+        return GetProductsResponse.builder()
+            .products(
+                products
+                    // Convierte la coleccion List<Product> en un flujo de datos (stream) que permite procesar los elementos de manera secuencial
+                    .stream()
+                    // toma los elementos del stream ('p') y los mapea a ProductResponse
+                    .map(p ->
+                        ProductResponse.builder()
+                            .id(p.getId())
+                            .name(p.getName())
+                            .price(p.getPrice())
+                            .quantity(p.getQuantity())
+                            .build()
+                    )
+                    // el .toList() recolecta los nuevos objetos y transformados y los arregla como una lista
+                    .toList()
             )
-            // el .toList() recolecta los nuevos objetos y transformados y los arregla como una lista
-            .toList();
+            .build();
     }
 
     @Override
-    public List<ProductResponse> getProductsByIds(ProductsByIdRequest request) {
+    public GetProductsResponse getProductsByIds(ProductsByIdRequest request) {
         /*
         Tiene la misma logica de getAllProducts pero en vez de usar findAll()
         usamos -> findAllById(ids) para encontrar solo la lista de ids/productos deseada
@@ -138,17 +142,21 @@ public class CatalogServiceImpl implements CatalogService {
         // 1. buscar productos usando la lista de IDs
         List<Product> products = repo.findAllById(request.getIds());
         // 3. convertir la lista de productos en una lista de ProductResponse y retornarla
-        return products
-            .stream()
-            .map(p ->
-                ProductResponse.builder()
-                    .id(p.getId())
-                    .name(p.getName())
-                    .price(p.getPrice())
-                    .quantity(p.getQuantity())
-                    .build()
+        return GetProductsResponse.builder()
+            .products(
+                products
+                    .stream()
+                    .map(p ->
+                        ProductResponse.builder()
+                            .id(p.getId())
+                            .name(p.getName())
+                            .price(p.getPrice())
+                            .quantity(p.getQuantity())
+                            .build()
+                    )
+                    .toList()
             )
-            .toList();
+            .build();
     }
 
     @Override

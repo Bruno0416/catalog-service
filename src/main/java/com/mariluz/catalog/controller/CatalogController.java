@@ -3,7 +3,6 @@ package com.mariluz.catalog.controller;
 import com.mariluz.catalog.dto.*;
 import com.mariluz.catalog.service.CatalogService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +53,7 @@ public class CatalogController {
 
     // 4. listar todos los productos
     @GetMapping("/products")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+    public ResponseEntity<GetProductsResponse> getAllProducts() {
         return ResponseEntity.status(HttpStatus.OK).body(
             service.getAllProducts()
         );
@@ -62,7 +61,7 @@ public class CatalogController {
 
     // 5. obtener lista de productos por id List<Integer> ids
     @GetMapping("/products/ids")
-    public ResponseEntity<List<ProductResponse>> getProductsByIds(
+    public ResponseEntity<GetProductsResponse> getProductsByIds(
         @Valid @RequestBody ProductsByIdRequest request
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
