@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +33,7 @@ public class Product {
     private Integer price;
 
     @NotNull(message = "El stock es obligatorio")
-    @Positive(message = "El stock debe ser mayor a 0")
+    @PositiveOrZero(message = "El stock debe ser mayor a 0")
     @Column(nullable = false)
     private Integer quantity;
 }
