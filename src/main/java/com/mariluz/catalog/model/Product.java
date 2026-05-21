@@ -33,7 +33,7 @@ public class Product {
     private Integer price;
 
     @NotNull(message = "El stock es obligatorio")
-    @PositiveOrZero(message = "El stock debe ser mayor a 0")
+    @PositiveOrZero(message = "El stock debe ser mayor o igual a 0")
     @Column(nullable = false)
     private Integer quantity;
 }
