@@ -2,12 +2,8 @@ package com.mariluz.catalog.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
-@AllArgsConstructor
-@Builder
 @Data
 public class UpdateStockRequest {
 

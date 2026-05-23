@@ -1,12 +1,10 @@
 package com.mariluz.catalog.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@AllArgsConstructor
+@Value
 @Builder
-@Data
 public class ProductResponse {
 
     private Integer id;
