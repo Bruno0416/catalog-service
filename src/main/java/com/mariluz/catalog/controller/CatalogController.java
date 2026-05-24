@@ -44,9 +44,7 @@ public class CatalogController {
     public ResponseEntity<ProductResponse> updateProduct(
         @Valid @RequestBody UpdateProductRequest request
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            service.updateProduct(request)
-        );
+        return ResponseEntity.ok(service.updateProduct(request));
     }
 
     // 3. Obtener producto por id
@@ -57,17 +55,13 @@ public class CatalogController {
             message = "El id debe ser mayor que 0"
         ) Integer id
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            service.getProductById(id)
-        );
+        return ResponseEntity.ok(service.getProductById(id));
     }
 
     // 4. Listar todos los productos
     @GetMapping("/products")
     public ResponseEntity<GetProductsResponse> getAllProducts() {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            service.getAllProducts()
-        );
+        return ResponseEntity.ok(service.getAllProducts());
     }
 
     // ─── Métodos para comunicarse con sales-service ───────────────────────────
@@ -77,9 +71,7 @@ public class CatalogController {
     public ResponseEntity<GetProductsResponse> getProductsByIds(
         @Valid @RequestBody ProductsByIdRequest request
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            service.getProductsByIds(request)
-        );
+        return ResponseEntity.ok(service.getProductsByIds(request));
     }
 
     // 6. Actualizar stock
@@ -89,6 +81,6 @@ public class CatalogController {
     ) {
         service.updateStock(request);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 }
