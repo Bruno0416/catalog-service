@@ -9,6 +9,7 @@ import com.mariluz.catalog.dto.UpdateStockRequest;
 import com.mariluz.catalog.exceptions.ForbiddenOperationException;
 import com.mariluz.catalog.exceptions.InsufficientStockException;
 import com.mariluz.catalog.exceptions.ProductDoesNotExistException;
+import com.mariluz.catalog.mapper.ProductMapper;
 import com.mariluz.catalog.model.Product;
 import com.mariluz.catalog.model.User;
 import com.mariluz.catalog.repository.CatalogRepository;
@@ -17,12 +18,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CatalogServiceImpl implements CatalogService {
 
     private final CatalogRepository repo;
+    private final ProductMapper mapper;
 
     // ─── Helpers privados para validar rol de usuario ────────────────────────
 
@@ -30,7 +33,7 @@ public class CatalogServiceImpl implements CatalogService {
         Authentication auth =
             SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof User user)) {
-            // M5: ForbiddenOperationException reemplaza a UnauthorizedOperationException
+            // ForbiddenOperationException reemplaza a UnauthorizedOperationException
             throw new ForbiddenOperationException(
                 "No hay un usuario autenticado"
             );
@@ -61,9 +64,10 @@ public class CatalogServiceImpl implements CatalogService {
                 .build()
         );
         // 3. Retornar ProductResponse con los datos de la tupla creada
-        return toResponse(p);
+        return mapper.toResponse(p);
     }
 
+    @Transactional
     @Override
     public ProductResponse updateProduct(UpdateProductRequest request) {
         // 1. Validar que la solicitud la manda un admin
@@ -72,20 +76,15 @@ public class CatalogServiceImpl implements CatalogService {
         );
 
         // 2. Validar si existe el producto usando id
-        if (!repo.existsById(request.getId())) {
-            throw new ProductDoesNotExistException();
-        }
-        // 3. Actualizar el producto
-        Product p = repo.save(
-            Product.builder()
-                .id(request.getId())
-                .name(request.getName())
-                .price(request.getPrice())
-                .quantity(request.getQuantity())
-                .build()
-        );
+        Product product = repo
+            .findById(request.getId())
+            .orElseThrow(ProductDoesNotExistException::new);
+
+        // 3. Actualizar el producto (no es necesario el .save, @Transactional lo actualiza)
+        mapper.updateProduct(request, product);
+
         // 4. Retornar el producto actualizado
-        return toResponse(p);
+        return mapper.toResponse(product);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class CatalogServiceImpl implements CatalogService {
             .orElseThrow(ProductDoesNotExistException::new);
 
         // 2. Retornar el producto encontrado
-        return toResponse(p);
+        return mapper.toResponse(p);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class CatalogServiceImpl implements CatalogService {
 
         // 2. Convertir la lista en ProductResponse y retornarla
         return GetProductsResponse.builder()
-            .products(products.stream().map(this::toResponse).toList())
+            .products(products.stream().map(mapper::toResponse).toList())
             .build();
     }
 
@@ -116,7 +115,7 @@ public class CatalogServiceImpl implements CatalogService {
         List<Integer> requestedIds = request.getIds();
         List<Product> products = repo.findAllById(requestedIds);
 
-        // B12: Verificar que todos los IDs solicitados fueron encontrados
+        // 2. Verificar que todos los IDs solicitados fueron encontrados
         if (products.size() != requestedIds.size()) {
             List<Integer> foundIds = products
                 .stream()
@@ -132,9 +131,9 @@ public class CatalogServiceImpl implements CatalogService {
             );
         }
 
-        // 2. Convertir la lista en ProductResponse y retornarla
+        // 3. Convertir la lista en ProductResponse y retornarla
         return GetProductsResponse.builder()
-            .products(products.stream().map(this::toResponse).toList())
+            .products(products.stream().map(mapper::toResponse).toList())
             .build();
     }
 
@@ -145,7 +144,7 @@ public class CatalogServiceImpl implements CatalogService {
             .findById(request.getId())
             .orElseThrow(ProductDoesNotExistException::new);
 
-        // 2. M6: Validar que el stock no quede negativo
+        // 2. Validar que el stock no quede negativo
         int newQuantity = p.getQuantity() - request.getQuantity();
         if (newQuantity < 0) {
             throw new InsufficientStockException(
@@ -161,16 +160,5 @@ public class CatalogServiceImpl implements CatalogService {
         // 3. Actualizar y persistir el nuevo stock
         p.setQuantity(newQuantity);
         repo.save(p);
-    }
-
-    // ─── Helper de mapeo Product → ProductResponse ───────────────────────────
-
-    private ProductResponse toResponse(Product p) {
-        return ProductResponse.builder()
-            .id(p.getId())
-            .name(p.getName())
-            .price(p.getPrice())
-            .quantity(p.getQuantity())
-            .build();
     }
 }
