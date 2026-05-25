@@ -4,6 +4,7 @@ import com.mariluz.catalog.dto.CreateProductRequest;
 import com.mariluz.catalog.dto.GetProductsResponse;
 import com.mariluz.catalog.dto.ProductResponse;
 import com.mariluz.catalog.dto.ProductsByIdRequest;
+import com.mariluz.catalog.dto.RestoreStockRequest;
 import com.mariluz.catalog.dto.UpdateProductRequest;
 import com.mariluz.catalog.dto.UpdateStockRequest;
 import com.mariluz.catalog.service.CatalogService;
@@ -80,6 +81,16 @@ public class CatalogController {
         @Valid @RequestBody UpdateStockRequest request
     ) {
         service.updateStock(request);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    // 7. restore stock (en caso de que de un error la transaccion createSale, se revierte el stock)
+    @PutMapping("/restore-stock")
+    public ResponseEntity<Void> restoreStock(
+        @Valid @RequestBody RestoreStockRequest request
+    ) {
+        service.restoreStock(request);
 
         return ResponseEntity.noContent().build();
     }

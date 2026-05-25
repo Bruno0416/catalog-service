@@ -4,6 +4,7 @@ import com.mariluz.catalog.dto.CreateProductRequest;
 import com.mariluz.catalog.dto.GetProductsResponse;
 import com.mariluz.catalog.dto.ProductResponse;
 import com.mariluz.catalog.dto.ProductsByIdRequest;
+import com.mariluz.catalog.dto.RestoreStockRequest;
 import com.mariluz.catalog.dto.UpdateProductRequest;
 import com.mariluz.catalog.dto.UpdateStockRequest;
 import com.mariluz.catalog.exceptions.ForbiddenOperationException;
@@ -160,5 +161,20 @@ public class CatalogServiceImpl implements CatalogService {
         // 3. Actualizar y persistir el nuevo stock
         p.setQuantity(newQuantity);
         repo.save(p);
+    }
+
+    // 7. restore stock (en caso de un error la transaccion createSale, se revierte el stock)
+    @Override
+    public void restoreStock(RestoreStockRequest request) {
+        // 1. validar producto
+        Product p = repo
+            .findById(request.getId())
+            .orElseThrow(ProductDoesNotExistException::new);
+
+        // 2. actualizar stock (pQuantity + requestQuantity = restoredQuantity)
+        p.setQuantity(p.getQuantity() + request.getQuantity());
+        repo.save(p);
+
+        System.out.println("[DEBUG] stock restaurado correctamente");
     }
 }

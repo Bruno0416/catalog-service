@@ -4,6 +4,7 @@ import com.mariluz.catalog.dto.CreateProductRequest;
 import com.mariluz.catalog.dto.GetProductsResponse;
 import com.mariluz.catalog.dto.ProductResponse;
 import com.mariluz.catalog.dto.ProductsByIdRequest;
+import com.mariluz.catalog.dto.RestoreStockRequest;
 import com.mariluz.catalog.dto.UpdateProductRequest;
 import com.mariluz.catalog.dto.UpdateStockRequest;
 
@@ -25,4 +26,7 @@ public interface CatalogService {
 
     // 6. Actualizar stock
     void updateStock(UpdateStockRequest request);
+
+    // 7. restore stock (en caso de que de un error la transaccion createSale, se revierte el stock)
+    void restoreStock(RestoreStockRequest request);
 }
