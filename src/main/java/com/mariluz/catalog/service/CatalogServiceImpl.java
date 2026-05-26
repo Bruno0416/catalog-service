@@ -139,6 +139,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    @Transactional
     public void updateStock(UpdateStockRequest request) {
         // 1. Verificar que el producto existe
         Product p = repo
@@ -165,6 +166,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     // 7. restore stock (en caso de un error la transaccion createSale, se revierte el stock)
     @Override
+    @Transactional
     public void restoreStock(RestoreStockRequest request) {
         // 1. validar producto
         Product p = repo
