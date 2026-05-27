@@ -38,17 +38,34 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Handler para ForbiddenOperationException (permiso denegado)
-    @ExceptionHandler(ForbiddenOperationException.class)
-    public ResponseEntity<ErrorResponse> handleForbiddenOperation(
-        ForbiddenOperationException ex,
+    // Handler usuario no autenticado
+    @ExceptionHandler(UnauthenticatedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthenticated(
+        UnauthenticatedException ex,
+        HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Usuario no autenticado")
+                .errors(Map.of("error", ex.getMessage()))
+                .endpoint(request.getRequestURI())
+                .build()
+        );
+    }
+
+    // Handler permisos usuario
+    @ExceptionHandler(UnauthorizedOperationException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedOperation(
+        UnauthorizedOperationException ex,
         HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             ErrorResponse.builder()
                 .timeStamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
-                .message(ex.getMessage())
+                .message("Debe ser administrador para realizar esta operacion")
                 .errors(Map.of("error", ex.getMessage()))
                 .endpoint(request.getRequestURI())
                 .build()

@@ -7,20 +7,23 @@ import com.mariluz.catalog.dto.ProductsByIdRequest;
 import com.mariluz.catalog.dto.RestoreStockRequest;
 import com.mariluz.catalog.dto.UpdateProductRequest;
 import com.mariluz.catalog.dto.UpdateStockRequest;
-import com.mariluz.catalog.exceptions.ForbiddenOperationException;
 import com.mariluz.catalog.exceptions.InsufficientStockException;
 import com.mariluz.catalog.exceptions.ProductDoesNotExistException;
+import com.mariluz.catalog.exceptions.UnauthenticatedException;
+import com.mariluz.catalog.exceptions.UnauthorizedOperationException;
 import com.mariluz.catalog.mapper.ProductMapper;
 import com.mariluz.catalog.model.Product;
 import com.mariluz.catalog.model.User;
 import com.mariluz.catalog.repository.CatalogRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CatalogServiceImpl implements CatalogService {
@@ -28,29 +31,29 @@ public class CatalogServiceImpl implements CatalogService {
     private final CatalogRepository repo;
     private final ProductMapper mapper;
 
-    // ─── Helpers privados para validar rol de usuario ────────────────────────
+    // ------------------ Helpers privados para validar rol usuario -------------------
 
     private User getCurrentUser() {
         Authentication auth =
             SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof User user)) {
-            // ForbiddenOperationException reemplaza a UnauthorizedOperationException
-            throw new ForbiddenOperationException(
-                "No hay un usuario autenticado"
-            );
+            throw new UnauthenticatedException("No hay un usuario autenticado");
         }
         return user;
     }
 
     private void validateAdminAccess(String message) {
         User user = getCurrentUser();
+
         if (!user.getRole().equalsIgnoreCase("ADMIN")) {
-            throw new ForbiddenOperationException(message);
+            // si el usuario no es admin arrojamos un error
+            throw new UnauthorizedOperationException(message);
         }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
 
+    @Transactional
     @Override
     public ProductResponse createProduct(CreateProductRequest request) {
         // 1. Validar que la solicitud la manda un admin
@@ -177,6 +180,6 @@ public class CatalogServiceImpl implements CatalogService {
         p.setQuantity(p.getQuantity() + request.getQuantity());
         repo.save(p);
 
-        System.out.println("[DEBUG] stock restaurado correctamente");
+        log.info("Stock restaurado correctamente para producto con ID: {}", request.getId());
     }
 }
