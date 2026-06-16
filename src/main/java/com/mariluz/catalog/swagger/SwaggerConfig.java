@@ -1,6 +1,7 @@
 package com.mariluz.catalog.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -14,7 +15,8 @@ import org.springframework.context.annotation.Configuration;
     info = @Info(
         title = "Catalog Service API",
         description = "Documentación de microservicio de catálogo",
-        version = "1.0"
+        version = "1.0",
+        contact = @Contact(name = "Bruno", email = "bru.valladares@duocuc.cl")
     )
 )
 public class SwaggerConfig {
