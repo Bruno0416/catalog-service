@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/catalog")
 @RequiredArgsConstructor
 @Validated
-public class CatalogController {
+public class CatalogController implements CatalogApi {
 
     private final CatalogService service;
 

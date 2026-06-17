@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
@@ -78,10 +77,10 @@ public class GlobalExceptionHandler {
         InsufficientStockException ex,
         HttpServletRequest request
     ) {
-        return ResponseEntity.status(HttpStatusCode.valueOf(422)).body(
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(
             ErrorResponse.builder()
                 .timeStamp(LocalDateTime.now())
-                .status(422)
+                .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
                 .message(ex.getMessage())
                 .errors(Map.of("error", ex.getMessage()))
                 .endpoint(request.getRequestURI())
