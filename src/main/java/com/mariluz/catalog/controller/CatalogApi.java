@@ -14,14 +14,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface CatalogApi {
     // 1. Crear producto
@@ -130,10 +123,7 @@ public interface CatalogApi {
             )
         ),
     })
-    @PostMapping("/create")
-    public ResponseEntity<ProductResponse> createProduct(
-        @Valid @RequestBody CreateProductRequest request
-    );
+    ResponseEntity<ProductResponse> createProduct(CreateProductRequest request);
 
     // 2. Actualizar producto
     @Operation(
@@ -262,10 +252,7 @@ public interface CatalogApi {
             )
         ),
     })
-    @PutMapping("/update")
-    public ResponseEntity<ProductResponse> updateProduct(
-        @Valid @RequestBody UpdateProductRequest request
-    );
+    ResponseEntity<ProductResponse> updateProduct(UpdateProductRequest request);
 
     // 3. Obtener producto por id
     @Operation(
@@ -352,13 +339,7 @@ public interface CatalogApi {
             )
         ),
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(
-        @PathVariable @Min(
-            value = 1,
-            message = "El id debe ser mayor que 0"
-        ) Integer id
-    );
+    ResponseEntity<ProductResponse> getProductById(Integer id);
 
     // 4. Listar todos los productos
     @Operation(
@@ -409,8 +390,7 @@ public interface CatalogApi {
             )
         ),
     })
-    @GetMapping("/products")
-    public ResponseEntity<GetProductsResponse> getAllProducts();
+    ResponseEntity<GetProductsResponse> getAllProducts();
 
     // ─── Métodos para comunicarse con sales-service ───────────────────────────
 
@@ -505,9 +485,8 @@ public interface CatalogApi {
             )
         ),
     })
-    @PostMapping("/products/ids")
-    public ResponseEntity<GetProductsResponse> getProductsByIds(
-        @Valid @RequestBody ProductsByIdRequest request
+    ResponseEntity<GetProductsResponse> getProductsByIds(
+        ProductsByIdRequest request
     );
 
     // 6. Actualizar stock
@@ -603,10 +582,7 @@ public interface CatalogApi {
             )
         ),
     })
-    @PutMapping("/update-stock")
-    public ResponseEntity<Void> updateStock(
-        @Valid @RequestBody UpdateStockRequest request
-    );
+    ResponseEntity<Void> updateStock(UpdateStockRequest request);
 
     // 7. restore stock (en caso de que de un error la transaccion createSale, se revierte el stock)
     @Operation(
@@ -680,8 +656,5 @@ public interface CatalogApi {
             )
         ),
     })
-    @PutMapping("/restore-stock")
-    public ResponseEntity<Void> restoreStock(
-        @Valid @RequestBody RestoreStockRequest request
-    );
+    ResponseEntity<Void> restoreStock(RestoreStockRequest request);
 }
