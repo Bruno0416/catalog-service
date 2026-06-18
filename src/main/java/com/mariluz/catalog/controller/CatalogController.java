@@ -28,6 +28,7 @@ public class CatalogController implements CatalogApi {
     private final CatalogService service;
 
     // 1. Crear producto
+    @Override
     @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(
         @RequestBody CreateProductRequest request
@@ -38,6 +39,7 @@ public class CatalogController implements CatalogApi {
     }
 
     // 2. Actualizar producto
+    @Override
     @PutMapping("/update")
     public ResponseEntity<ProductResponse> updateProduct(
         @RequestBody UpdateProductRequest request
@@ -46,12 +48,14 @@ public class CatalogController implements CatalogApi {
     }
 
     // 3. Obtener producto por id
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(Integer id) {
         return ResponseEntity.ok(service.getProductById(id));
     }
 
     // 4. Listar todos los productos
+    @Override
     @GetMapping("/products")
     public ResponseEntity<GetProductsResponse> getAllProducts() {
         return ResponseEntity.ok(service.getAllProducts());
@@ -60,6 +64,7 @@ public class CatalogController implements CatalogApi {
     // ─── Métodos para comunicarse con sales-service ───────────────────────────
 
     // 5. Obtener lista de productos por ids
+    @Override
     @PostMapping("/products/ids")
     public ResponseEntity<GetProductsResponse> getProductsByIds(
         @RequestBody ProductsByIdRequest request
@@ -68,6 +73,7 @@ public class CatalogController implements CatalogApi {
     }
 
     // 6. Actualizar stock
+    @Override
     @PutMapping("/update-stock")
     public ResponseEntity<Void> updateStock(
         @RequestBody UpdateStockRequest request
@@ -78,6 +84,7 @@ public class CatalogController implements CatalogApi {
     }
 
     // 7. restore stock (en caso de que de un error la transaccion createSale, se revierte el stock)
+    @Override
     @PutMapping("/restore-stock")
     public ResponseEntity<Void> restoreStock(
         @RequestBody RestoreStockRequest request
