@@ -14,7 +14,10 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface CatalogApi {
     // 1. Crear producto
@@ -123,7 +126,9 @@ public interface CatalogApi {
             )
         ),
     })
-    ResponseEntity<ProductResponse> createProduct(CreateProductRequest request);
+    ResponseEntity<ProductResponse> createProduct(
+        @Valid CreateProductRequest request
+    );
 
     // 2. Actualizar producto
     @Operation(
@@ -252,7 +257,9 @@ public interface CatalogApi {
             )
         ),
     })
-    ResponseEntity<ProductResponse> updateProduct(UpdateProductRequest request);
+    ResponseEntity<ProductResponse> updateProduct(
+        @Valid UpdateProductRequest request
+    );
 
     // 3. Obtener producto por id
     @Operation(
@@ -339,7 +346,12 @@ public interface CatalogApi {
             )
         ),
     })
-    ResponseEntity<ProductResponse> getProductById(Integer id);
+    ResponseEntity<ProductResponse> getProductById(
+        @PathVariable @Min(
+            value = 1,
+            message = "El id debe ser mayor que 0"
+        ) Integer id
+    );
 
     // 4. Listar todos los productos
     @Operation(
@@ -486,7 +498,7 @@ public interface CatalogApi {
         ),
     })
     ResponseEntity<GetProductsResponse> getProductsByIds(
-        ProductsByIdRequest request
+        @Valid ProductsByIdRequest request
     );
 
     // 6. Actualizar stock
@@ -582,7 +594,7 @@ public interface CatalogApi {
             )
         ),
     })
-    ResponseEntity<Void> updateStock(UpdateStockRequest request);
+    ResponseEntity<Void> updateStock(@Valid UpdateStockRequest request);
 
     // 7. restore stock (en caso de que de un error la transaccion createSale, se revierte el stock)
     @Operation(
@@ -656,5 +668,5 @@ public interface CatalogApi {
             )
         ),
     })
-    ResponseEntity<Void> restoreStock(RestoreStockRequest request);
+    ResponseEntity<Void> restoreStock(@Valid RestoreStockRequest request);
 }

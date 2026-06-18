@@ -8,14 +8,11 @@ import com.mariluz.catalog.dto.RestoreStockRequest;
 import com.mariluz.catalog.dto.UpdateProductRequest;
 import com.mariluz.catalog.dto.UpdateStockRequest;
 import com.mariluz.catalog.service.CatalogService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +30,7 @@ public class CatalogController implements CatalogApi {
     // 1. Crear producto
     @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(
-        @Valid @RequestBody CreateProductRequest request
+        @RequestBody CreateProductRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             service.createProduct(request)
@@ -43,19 +40,14 @@ public class CatalogController implements CatalogApi {
     // 2. Actualizar producto
     @PutMapping("/update")
     public ResponseEntity<ProductResponse> updateProduct(
-        @Valid @RequestBody UpdateProductRequest request
+        @RequestBody UpdateProductRequest request
     ) {
         return ResponseEntity.ok(service.updateProduct(request));
     }
 
     // 3. Obtener producto por id
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(
-        @PathVariable @Min(
-            value = 1,
-            message = "El id debe ser mayor que 0"
-        ) Integer id
-    ) {
+    public ResponseEntity<ProductResponse> getProductById(Integer id) {
         return ResponseEntity.ok(service.getProductById(id));
     }
 
@@ -70,7 +62,7 @@ public class CatalogController implements CatalogApi {
     // 5. Obtener lista de productos por ids
     @PostMapping("/products/ids")
     public ResponseEntity<GetProductsResponse> getProductsByIds(
-        @Valid @RequestBody ProductsByIdRequest request
+        @RequestBody ProductsByIdRequest request
     ) {
         return ResponseEntity.ok(service.getProductsByIds(request));
     }
@@ -78,7 +70,7 @@ public class CatalogController implements CatalogApi {
     // 6. Actualizar stock
     @PutMapping("/update-stock")
     public ResponseEntity<Void> updateStock(
-        @Valid @RequestBody UpdateStockRequest request
+        @RequestBody UpdateStockRequest request
     ) {
         service.updateStock(request);
 
@@ -88,7 +80,7 @@ public class CatalogController implements CatalogApi {
     // 7. restore stock (en caso de que de un error la transaccion createSale, se revierte el stock)
     @PutMapping("/restore-stock")
     public ResponseEntity<Void> restoreStock(
-        @Valid @RequestBody RestoreStockRequest request
+        @RequestBody RestoreStockRequest request
     ) {
         service.restoreStock(request);
 
